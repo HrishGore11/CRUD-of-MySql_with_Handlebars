@@ -2,23 +2,14 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 9090;
-// const homePage = require("./routes/user");
-// const authRoute = require("./routes/auth");
-// const signRoute = require("./routes/signUp");
 const { Sequelize, DataTypes, json } = require("sequelize");
-
 const { engine } = require("express-handlebars");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", "./views");
-
-// app.use("/user", homePage);
-// app.use("/auth", authRoute);
-// app.use("/signup", signRoute);
 
 const sequelize = new Sequelize(
   process.env.DATABASE,
@@ -63,6 +54,8 @@ const Assignment = sequelize.define(
   }
 );
 //////////////////////////////////////////
+// To get the All Assignment on home page
+
 app.get("/home", async (req, res) => {
   try {
     const subject = await Assignment.findAll();
@@ -75,10 +68,13 @@ app.get("/home", async (req, res) => {
   }
 });
 /////////////////////////////////////////
+// For creation of New Assignment
 app.get("/Assignment", (req, res) => {
   res.render("post");
 });
 /////////////////////////////////////////
+// To Create the New Assignment
+
 app.post("/post/Assignment", async (req, res) => {
   try {
     const body = req.body;
@@ -92,6 +88,8 @@ app.post("/post/Assignment", async (req, res) => {
   }
 });
 /////////////////////////////////////////
+// To delete the Assignment by Id & updation in Home page
+
 app.get("/api/delete/:id", async (req, res) => {
   try {
     const subject = await Assignment.destroy({
@@ -106,6 +104,9 @@ app.get("/api/delete/:id", async (req, res) => {
   }
 });
 /////////////////////////////////////////
+
+// To get the Assignment by Id for updation
+
 app.get("/update/:id", async (req, res) => {
   try {
     const assign = await Assignment.findOne({
@@ -124,6 +125,8 @@ app.get("/update/:id", async (req, res) => {
   }
 });
 ///////////////////////////////////////////
+// To update the Assignment by Id
+
 app.post("/update/:id", async (req, res) => {
   try {
     const body = req.body;
@@ -151,9 +154,6 @@ app.post("/update/:id", async (req, res) => {
   }
 });
 /////////////////////////////////////////
-
-/////////////////////////////////////////
-
 connection().then((err) => {
   if (!err) {
     app.listen(port, () => {
